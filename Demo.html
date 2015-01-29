@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Demo</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<script src="openWeather.js"></script>
+	<script src="libs/jquery/dist/jquery.min.js"></script>
+</head>
+
+<body>
+	<div>
+		<h1>MAIN</h1>
+		<h2>DETAIL</h2>
+		<h3>ICON_CODE</h3>
+		<img>
+	</div>
+	<div>
+		<h4>Get Weather By Lat Lng</h4>
+		<input id="lat" type="number" placeholder="latitude">
+		<input id="lng" type="number" placeholder="longitude">
+		<button id="ll">Get</button>
+		<br>
+		<h4>Get Weather By Current Location</h4>
+		<button id="cl">Get</button>
+	</div>
+	<script>
+		$(function () {
+			$('#ll').on('click', function () {
+				OpenWeather.getWeatherByLatLng($('#lat').val(), $('#lng').val(), function (data) {
+					$('h1').text(data.main);
+					$('h2').text(data.detail);
+					$('h3').text(data.iconCode);
+					$('img').attr('src', data.icon);
+				});
+			});
+			$('#cl').on('click', function () {
+				OpenWeather.getWeatherByCurrentLocation(function (data) {
+					$('h1').text(data.main);
+					$('h2').text(data.detail);
+					$('h3').text(data.iconCode);
+					$('img').attr('src', data.icon);
+				});
+			});
+		})
+	</script>
+</body>
+
+</html>
