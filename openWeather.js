@@ -1,6 +1,9 @@
 (function () {
 	"use strict";
-
+	/**
+	 * Open Weather
+	 * @constructs OpenWeather
+	 */
 	function OpenWeather() {
 		var self = this;
 		var worker = new OWworker(self);
@@ -11,18 +14,31 @@
 		self.IMG_URL = IMG_URL;
 		self.data = {};
 	};
-	
+
+	/**
+	 * Get Current Stored Data
+	 * @returns {Object} data
+	 */
 	OpenWeather.prototype.getCurrentData = function () {
 		var self = this;
 		return self.data;
 	};
-
+	/**
+	 * Get Weather By LatLng
+	 * @param {Number}   lat latitude
+	 * @param {Number}   lng Longitude
+	 * @param {Function} cbc Callback
+	 */
 	OpenWeather.prototype.getWeatherByLatLng = function (lat, lng, cbc) {
 		var self = this;
 		var url = self.URL + 'lat=' + lat + '&lon=' + lng;
 		self.worker.getData(url, cbc);
 	};
 
+	/**
+	 * Get Weather By Current Location
+	 * @param {Function} cbc Callback
+	 */
 	OpenWeather.prototype.getWeatherByCurrentLocation = function (cbc) {
 		var self = this;
 		navigator.geolocation.getCurrentPosition(function (position) {
@@ -31,13 +47,25 @@
 			var latlng = position.coords;
 			var url = self.URL + 'lat=' + latlng.latitude + '&lon=' + latlng.longitude;
 			self.worker.getData(url, cbc);
-		}.bind({self: self, cbc: cbc}));
+		}.bind({
+			self: self,
+			cbc: cbc
+		}));
 	};
 
+	/**
+	 * Open Weather Worker
+	 * @constructs OWworkern
+	 * @param {Object} OW OpenWeather
+	 */
 	function OWworker(OW) {
 		this.OW = OW;
 	};
-
+	/**
+	 * Get Data From OpenWeatherMap
+	 * @param {String}   url API
+	 * @param {Function} cbc Callback
+	 */
 	OWworker.prototype.getData = function (url, cbc) {
 		var self = this;
 		var XHR = new XMLHttpRequest();
@@ -58,7 +86,11 @@
 		});
 		XHR.send(null);
 	};
-
+	/**
+	 * Process Raw Data
+	 * @param   {Object} d Raw Data
+	 * @returns {Object} Processed Data
+	 */
 	OWworker.prototype.processData = function (d) {
 		var self = this;
 		var weather = d.weather[0] || d.weather;
@@ -70,10 +102,15 @@
 		};
 		return data;
 	};
+	/**
+	 * Get Icon Url
+	 * @param   {String} iconCode Icon Code
+	 * @returns {String} Icon Url
+	 */
 	OWworker.prototype.getIconUrl = function (iconCode) {
 		var self = this;
 		return self.OW.IMG_URL + iconCode + '.png';
 	};
-
+	// Expose to Global
 	window.OpenWeather = new OpenWeather();
 }());
